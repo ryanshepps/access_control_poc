@@ -9,13 +9,13 @@ defmodule CanaryPoc.AccessControl do
     end
   end
 
-  def has_roles?(%{roles: user_roles}, required_roles) do
+  def has_any_roles?(%{roles: user_roles}, required_roles) do
     Logger.debug("Checking roles: #{inspect(user_roles)} against required roles: #{inspect(required_roles)}")
     Enum.any?(required_roles, fn role -> role in user_roles end)
   end
 
-  def has_roles?(conn, required_roles) do
-    authorized = has_roles?(conn.assigns[:current_user], required_roles)
+  def has_any_roles?(conn, required_roles) do
+    authorized = has_any_roles?(conn.assigns[:current_user], required_roles)
 
     if authorized do
       Plug.Conn.assign(conn, :authorized, true)
@@ -30,7 +30,7 @@ defmodule CanaryPoc.AccessControl do
       unquote(method)(unquote(path)) do
         conn = var!(conn)
         conn
-        |> has_roles?(unquote(roles))
+        |> has_any_roles?(unquote(roles))
         |> case do
           %{assigns: %{authorized: true}} ->
             unquote(body)
@@ -41,7 +41,7 @@ defmodule CanaryPoc.AccessControl do
     end
   end
 
-  defmacro has_roles(roles) do
+  defmacro has_any_roles(roles) do
     quote do
       @roles unquote(roles)
     end

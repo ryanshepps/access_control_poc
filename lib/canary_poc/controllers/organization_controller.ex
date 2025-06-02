@@ -7,22 +7,22 @@ defmodule CanaryPoc.Controllers.OrganizationController do
   plug :match
   plug :dispatch
 
-  has_roles ["admin", "manager", "employee"]
+  has_any_roles ["admin", "manager", "employee"]
   get_protected "/:id" do
     send_resp(conn, 200, "Organization retrieved")
   end
 
-  has_roles ["admin"]
+  has_any_roles ["admin"]
   post_protected "/" do
     send_resp(conn, 201, "Organization created")
   end
 
-  has_roles ["admin", "manager"]
+  has_any_roles ["admin", "manager"]
   put_protected "/:id" do
     send_resp(conn, 200, "Organization updated")
   end
 
-  has_roles ["admin"]
+  has_any_roles ["admin"]
   delete_protected "/:id" do
     send_resp(conn, 200, "Organization deleted")
   end
