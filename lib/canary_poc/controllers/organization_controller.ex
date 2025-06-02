@@ -1,55 +1,30 @@
 defmodule CanaryPoc.Controllers.OrganizationController do
   use Plug.Router
+  use CanaryPoc.AccessControl
 
   require Logger
-
-  import CanaryPoc.AccessControl
 
   plug :match
   plug :dispatch
 
-  get "/:id" do
-    conn
-      |> has_roles?(["admin", "manager", "employee"])
-      |> case do
-        %{assigns: %{authorized: true}} ->
-          send_resp(conn, 200, "Organization retrieved")
-        _ ->
-          send_resp(conn, 403, "Forbidden")
-      end
+  has_roles ["admin", "manager", "employee"]
+  get_protected "/:id" do
+    send_resp(conn, 200, "Organization retrieved")
   end
 
-  post "/" do
-    conn
-      |> has_roles?(["admin"])
-      |> case do
-        %{assigns: %{authorized: true}} ->
-          send_resp(conn, 201, "Organization created")
-        _ ->
-          send_resp(conn, 403, "Forbidden")
-      end
+  has_roles ["admin"]
+  post_protected "/" do
+    send_resp(conn, 201, "Organization created")
   end
 
-  put "/:id" do
-    conn
-      |> has_roles?(["admin", "manager"])
-      |> case do
-        %{assigns: %{authorized: true}} ->
-          send_resp(conn, 200, "Organization updated")
-        _ ->
-          send_resp(conn, 403, "Forbidden")
-      end
+  has_roles ["admin", "manager"]
+  put_protected "/:id" do
+    send_resp(conn, 200, "Organization updated")
   end
 
-  delete "/:id" do
-    conn
-      |> has_roles?(["admin"])
-      |> case do
-        %{assigns: %{authorized: true}} ->
-          send_resp(conn, 200, "Organization deleted")
-        _ ->
-          send_resp(conn, 403, "Forbidden")
-      end
+  has_roles ["admin"]
+  delete_protected "/:id" do
+    send_resp(conn, 200, "Organization deleted")
   end
 
   match _ do

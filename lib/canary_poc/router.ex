@@ -20,7 +20,7 @@ defmodule CanaryPoc.Router do
       id: 1,
       name: "Homer Simpson",
       email: "homer@burnsnuclearpower.com",
-      roles: ["admin"]
+      roles: ["employee"]
     }
     Plug.Conn.assign(conn, :current_user, user)
   end
