@@ -8,6 +8,7 @@ defmodule CanaryPoc.Controllers.OrganizationController do
   plug :dispatch
 
   has_any_roles ["admin", "manager", "employee"]
+  has_organization_access 1
   get_protected "/:id" do
     send_resp(conn, 200, "Organization retrieved")
   end
